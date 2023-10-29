@@ -18,6 +18,7 @@ router.get('/:id', async (req, res) => {
     const singleTag = await Tag.findByPk(req.params.id,{
       include: [{model:Product}],
     });
+    console.log(singleTag);
     if (!singleTag) {
       res.status(404).json({message:"No such tag ID exist"});
       return;
@@ -39,13 +40,16 @@ router.post('/', async (req, res) => {
 //update a tag's name by its id value
 router.put('/:id', async (req, res) => {
   try {
-    const checkTagid = await Tag.findByPk(req.params.id);
-    if (!checkTagid) {
-      res.status(404).json({Message:"tagid doesn't exist"});
+    const tagUpdate = await Tag.update(req.body, {
+      where: {
+        id:req.params.id,
+      }
+    });
+    if (!tagUpdate) {
+      res.status(404).json({Message:"tag doesn't exist with the given ID"});
       return;
     }
-    const updateTagname = await Tag.update(req.body);
-    res.status(200).json(updateTagname);
+    res.status(200).json(tagUpdate);
   } catch(err) {
     res.status(400).json(err);
   }

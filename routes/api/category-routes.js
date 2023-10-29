@@ -39,13 +39,16 @@ router.post('/', async (req, res) => {
 // update category by ID through endpoints (./api/categories/:id)
 router.put('/:id', async (req, res) => {
 try {
-  const checkCategoryid = await Category.findByPk(req.params.id);
-  if (!checkCategoryid) {
+  const categoryUpdate = await Category.update(req.body, {
+    where: {
+      id:req.params.id,
+    }
+  });
+  if (!categoryUpdate) {
     res.status(404).json({Message:"Category doesn't exist"});
     return;
   }
-  const updateCategory = await Category.update(req.body);
-  res.status(200).json(updateCategory);
+  res.status(200).json(categoryUpdate);
 } catch(err) {
   res.status(400).json(err);
 }
